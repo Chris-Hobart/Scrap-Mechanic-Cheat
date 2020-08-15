@@ -10,7 +10,7 @@ dofile( "$SURVIVAL_DATA/Scripts/game/survival_units.lua" )
 
 SurvivalGame = class( nil )
 SurvivalGame.enableLimitedInventory = false
-SurvivalGame.enableRestrictions = true
+SurvivalGame.enableRestrictions = false
 
 local SyncInterval = 400 -- 400 ticks | 10 seconds
 
@@ -30,7 +30,10 @@ function SurvivalGame.server_onCreate( self )
 	self.data = nil
 
 	print( self.sv.saved.data )
-	g_survivalDev = true
+	if self.sv.saved.data and self.sv.saved.data.dev then
+		g_godMode = true
+		g_survivalDev = true
+	end
 
 	self:loadCraftingRecipes()
 
@@ -78,7 +81,7 @@ function SurvivalGame.server_onRefresh( self )
 end
 
 function SurvivalGame.client_onCreate( self )
-	if g_survivalDev then
+	if true then
 		sm.game.bindChatCommand( "/ammo", { { "int", "quantity", true } }, "cl_onChatCommand", "Give ammo (default 50)" )
 		sm.game.bindChatCommand( "/spudgun", {}, "cl_onChatCommand", "Give the spudgun" )
 		sm.game.bindChatCommand( "/gatling", {}, "cl_onChatCommand", "Give the potato gatling gun" )
@@ -163,6 +166,7 @@ function SurvivalGame.loadCraftingRecipes( self )
 			dispenser = "$SURVIVAL_DATA/CraftingRecipes/dispenser.json",
 			cookbot = "$SURVIVAL_DATA/CraftingRecipes/cookbot.json",
 			craftbot = "$SURVIVAL_DATA/CraftingRecipes/craftbot.json",
+			undecided = "$SURVIVAL_DATA/CraftingRecipes/undecided.json",
 			dressbot = "$SURVIVAL_DATA/CraftingRecipes/dressbot.json"
 		}
 		g_craftingRecipes = {}
